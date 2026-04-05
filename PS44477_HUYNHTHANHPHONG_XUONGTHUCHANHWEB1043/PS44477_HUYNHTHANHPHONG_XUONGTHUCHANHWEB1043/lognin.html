@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đăng nhập</title>
+  <link rel="stylesheet" href="css/login.css"/>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="brand">
+      <img src="img/logo.png" alt="Logo">
+    </div>
+
+    <form class="login-card" onsubmit="return loginUser()">
+      <h1>Đăng Nhập</h1>
+
+      <label class="field">
+        <span>Tên đăng nhập</span>
+        <input id="username" type="text" placeholder="Nhập tên đăng nhập" required>
+      </label>
+
+      <label class="field">
+        <span>Mật khẩu</span>
+        <input id="password" type="password" placeholder="Nhập mật khẩu" required>
+      </label>
+
+      <button class="btn-primary" type="submit">Đăng Nhập</button>
+
+      <p class="muted">
+        Chưa có tài khoản?
+        <a href="dangky.html">Đăng ký</a>
+      </p>
+      <a class="back" href="index.html">← Về trang chủ</a>
+    </form>
+  </div>
+
+  <script src="js/login.js"></script>
+</body>
+</html>

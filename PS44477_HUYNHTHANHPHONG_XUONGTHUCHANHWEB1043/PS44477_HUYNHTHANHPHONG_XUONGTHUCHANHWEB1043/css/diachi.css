@@ -1,0 +1,18 @@
+/* ==== Store Locator (trên footer) ==== */
+.store-locator{max-width:1100px;margin:24px auto 8px;padding:0 12px}
+.sl-card{background:#fff;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.06);padding:14px}
+.sl-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sl-head h3{margin:0;font-size:18px}
+.sl-btn{padding:10px 12px;border:1px solid #e9e9e9;border-radius:10px;background:#fff;font-weight:700;cursor:pointer}
+.sl-btn:hover{box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.sl-list{list-style:none;padding:0;margin:10px 0 6px;display:grid;gap:8px}
+.sl-item{display:flex;gap:8px;align-items:flex-start}
+.sl-item b{min-width:110px;display:inline-block}
+.sl-nearest{margin-top:10px;padding:12px;border:1px solid #f0f0f0;border-radius:12px;background:#fafafa}
+.sl-title{font-weight:800;margin-bottom:6px}
+.sl-msg{margin:6px 0}
+.sl-shop{color:#555}
+
+/* Map iframe responsive (16:9) */
+.sl-map{position:relative;padding-bottom:56.25%;height:0;margin-top:10px;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.sl-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0}

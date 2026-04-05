@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sản Phẩm</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    :root{--pri:#ff4b2b;--bg:#f7f7f7;--bd:#e9e9e9}
+    body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg)}
+    .sp-wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+    .sp-head{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .sp-title{margin:0;font-size:24px;font-weight:900}
+    .sp-search{flex:1;max-width:360px}
+    .sp-search input{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;outline:none}
+    .sp-search input:focus{border-color:var(--pri);box-shadow:0 0 0 4px rgba(255,75,43,.12)}
+
+    .sp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+    .sp-card{background:#fff;border:1px solid var(--bd);border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column}
+    .sp-thumb{background:#f6f6f6;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center}
+    .sp-thumb img{width:100%;height:100%;object-fit:contain;display:block}
+    .sp-body{padding:10px;display:flex;flex-direction:column;gap:6px;flex:1}
+    .sp-name{font-weight:800;line-height:1.25}
+    .sp-price{color:var(--pri);font-weight:900}
+    .sp-actions{display:flex;gap:8px;margin-top:auto}
+    .sp-btn{flex:1;border:0;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}
+    .sp-btn.primary{background:var(--pri);color:#fff}
+    .sp-btn.ghost{background:#fff;border:1px solid var(--bd)}
+    .sp-btn:hover{filter:brightness(.96)}
+
+    /* Modal */
+    .sp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:999}
+    .sp-modal{width:min(560px,94vw);background:#fff;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.18);overflow:hidden}
+    .sp-mhead{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--bd)}
+    .sp-mtitle{margin:0;font-weight:900}
+    .sp-close{background:transparent;border:0;font-size:22px;cursor:pointer}
+    .sp-mbody{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px}
+    .sp-main{background:#f6f6f6;border-radius:10px;overflow:hidden}
+    .sp-main img{width:100%;height:280px;object-fit:contain;display:block}
+    .sp-thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .sp-thumbs img{width:58px;height:58px;object-fit:cover;border-radius:8px;border:2px solid transparent;background:#f2f2f2;cursor:pointer}
+    .sp-thumbs img.active{border-color:#2979ff}
+    .sp-meta{display:flex;flex-direction:column;gap:10px}
+    .sp-meta .sp-price{font-size:18px}
+    .sp-qty{display:flex;gap:8px;align-items:center}
+    .sp-qty input{width:72px;padding:8px;border:1px solid var(--bd);border-radius:10px}
+    .sp-add{margin-top:auto}
+    .sp-add .sp-btn{width:100%}
+    @media (max-width:640px){.sp-mbody{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <!-- NAV (xài CSS sẵn trong style.css) -->
+  <nav>
+    <div class="nav-container">
+      <div class="nav-left"><a href="index.html"><img src="img/logo.png" alt="Logo" class="logo"></a></div>
+      <div class="nav-right"><input type="search" placeholder="Tìm Kiếm"></div>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang Chủ</a></li>
+        <li><a href="SanPham.html">Sản Phẩm</a></li>
+        <li><a href="#" onclick="window.location.href='index.html#';return false;">Giỏ Hàng</a></li>
+        <li><a href="lognin.html">Đăng Nhập</a></li>
+        <li><a href="dangky.html">Đăng Ký</a></li>
+      </ul>
+    </div>
+  </nav>
+<br>
+  <br>
+  <br>
+  <main class="sp-wrap">
+    <div class="sp-head">
+      <h1 class="sp-title">Danh sách sản phẩm</h1>
+      <div class="sp-search"><input id="spSearch" type="search" placeholder="Tìm tên sản phẩm…" /></div>
+    </div>
+    <div id="spGrid" class="sp-grid"></div>
+  </main>
+
+  <!-- Quick view modal -->
+  <div id="spOverlay" class="sp-overlay" onclick="SP.close(event)">
+    <div class="sp-modal" onclick="event.stopPropagation()">
+      <div class="sp-mhead">
+        <h3 id="spModalTitle" class="sp-mtitle"></h3>
+        <button class="sp-close" onclick="SP.hide()">&times;</button>
+      </div>
+      <div class="sp-mbody">
+        <div>
+          <div class="sp-main"><img id="spMainImg" src="" alt=""></div>
+          <div id="spThumbs" class="sp-thumbs"></div>
+        </div>
+        <div class="sp-meta">
+          <div class="sp-price" id="spModalPrice"></div>
+          <div class="sp-qty">
+            <label for="spQty"><b>Số lượng:</b></label>
+            <input id="spQty" type="number" min="1" value="1">
+          </div>
+          <div id="spDesc" style="color:#666;font-size:14px"></div>
+          <div class="sp-add">
+            <button class="sp-btn primary" onclick="SP.addToCart()">Thêm vào giỏ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Data (dùng ảnh online để không bị lỗi đường dẫn) =====
+    const PRODUCTS = [
+      {
+        name:"iPhone 14 Plus 512GB | Chính hãng VN/A",
+        price:17490000,
+        img:"https://24hstore.vn/images/products/2024/08/27/large/iphone-14-plus-trang_1724727027_1.jpg",
+        images:[
+          "https://24hstore.vn/images/products/2024/08/27/large/iphone-14-plus-trang_1724727027_1.jpg",
+          "https://24hstore.vn/images/products/2024/08/27/large/iphone-14-plus-den_1724727027_1.jpg",
+          "https://24hstore.vn/images/products/2024/08/27/large/iphone-14-plus-vang_1724727027_1.jpg"
+        ],
+        desc:"Màn hình lớn, camera tốt, pin bền – phù hợp giải trí và công việc."
+      },
+      {
+        name:"iPhone 15 Plus",
+        price:25000000,
+        img:"https://24hstore.vn/images/products/2024/08/27/original/iphone-15-hong_1724724917.jpg",
+        images:[
+          "https://24hstore.vn/images/products/2024/08/27/original/iphone-15-hong_1724724917.jpg",
+          "https://24hstore.vn/images/products/2024/08/27/original/iphone-15-den_1724724916.jpg",
+          "https://24hstore.vn/images/products/2024/08/27/original/iphone-15-trang_1724724915.jpg"
+        ],
+        desc:"Hiệu năng mạnh mẽ, màu sắc trẻ trung, camera chụp đêm đẹp."
+      },
+      {
+        name:"MacBook Air M2",
+        price:35000000,
+        img:"https://24hstore.vn/images/products/2022/06/23/original/smart-keyboard-folio-us-cho-129-inch-ipad-pro-gen-5-1_1655957987.webp",
+        images:[
+          "https://24hstore.vn/images/products/2022/06/23/original/smart-keyboard-folio-us-cho-129-inch-ipad-pro-gen-5-1_1655957987.webp"
+        ],
+        desc:"Siêu mỏng nhẹ, chip M2 mượt mà, pin dùng thoải mái cả ngày."
+      },
+      {
+        name:"Samsung Galaxy S23",
+        price:25000000,
+        img:"https://24hstore.vn/images/products/2025/03/10/original/galaxy-a56-5g-8gb-128gb-xam_1741604673.jpg",
+        images:[
+          "https://24hstore.vn/images/products/2025/03/10/original/galaxy-a56-5g-8gb-128gb-xam_1741604673.jpg",
+          "https://24hstore.vn/images/products/2025/03/10/original/galaxy-a56-5g-8gb-128gb-den_1741604674.jpg"
+        ],
+        desc:"Flagship Android hiệu năng cao, camera sắc nét, màn đẹp."
+      },
+      {
+        name:"iPhone 16 Plus",
+        price:20000000,
+        img:"https://24hstore.vn/images/products/2024/09/10/original/iphone-16-plus-xanh-luu-ly_1725930493.jpg",
+        images:[
+          "https://24hstore.vn/images/products/2024/09/10/original/iphone-16-plus-xanh-luu-ly_1725930493.jpg",
+          "https://24hstore.vn/images/products/2024/09/10/original/iphone-16-plus-den_1725930494.jpg"
+        ],
+        desc:"Thiết kế mới, chip mạnh, thời lượng pin ấn tượng."
+      },
+      {
+        name:"Tai nghe Bluetooth Apple AirPods 4",
+        price:2500000,
+        img:"https://24hstore.vn/images/products/2024/09/10/original/apple-airpods-4_1725937362.jpg",
+        images:[
+          "https://24hstore.vn/images/products/2024/09/10/original/apple-airpods-4_1725937362.jpg"
+        ],
+        desc:"Kết nối ổn định, đeo thoải mái, âm thanh cân bằng."
+      },
+      {
+        name:"Apple Watch Series 10",
+        price:7000000,
+        img:"https://24hstore.vn/images/products/2024/10/18/original/mwwh3sa_1729219618.jpg",
+        images:[
+          "https://24hstore.vn/images/products/2024/10/18/original/mwwh3sa_1729219618.jpg"
+        ],
+        desc:"Sức khỏe & luyện tập thông minh, màn hiển thị đẹp."
+      },
+      {
+        name:"iPad Pro M4 11 inch",
+        price:25000000,
+        img:"https://24hstore.vn/images/products/2024/05/09/original/mvv93za-ipad-pro-m4-11-inch-wifi-bac_1715247697.jpg",
+        images:[
+          "https://24hstore.vn/images/products/2024/05/09/original/mvv93za-ipad-pro-m4-11-inch-wifi-bac_1715247697.jpg"
+        ],
+        desc:"Màn 120Hz siêu mượt, chip mạnh, hỗ trợ bút & bàn phím."
+      }
+    ];
+
+    const VND = new Intl.NumberFormat('vi-VN',{style:'currency',currency:'VND'});
+    const $ = sel => document.querySelector(sel);
+    const grid = $('#spGrid');
+    const overlay = $('#spOverlay');
+    const modalTitle = $('#spModalTitle');
+    const modalPrice = $('#spModalPrice');
+    const modalDesc  = $('#spDesc');
+    const mainImg    = $('#spMainImg');
+    const thumbsWrap = $('#spThumbs');
+    const qtyInput   = $('#spQty');
+    const searchInput= $('#spSearch');
+
+    let currentIndex = -1;
+    let filtered = [...PRODUCTS];
+
+    function render(list){
+      grid.innerHTML = '';
+      list.forEach((p,i)=>{
+        const card = document.createElement('div');
+        card.className = 'sp-card';
+        card.innerHTML = `
+          <div class="sp-thumb"><img src="${p.img}" alt="${p.name}" ondblclick="SP.show(${i})"></div>
+          <div class="sp-body">
+            <div class="sp-name">${p.name}</div>
+            <div class="sp-price">${VND.format(p.price)}</div>
+            <div class="sp-actions">
+              <button class="sp-btn ghost" onclick="SP.show(${i})">Xem nhanh</button>
+              <button class="sp-btn primary" onclick="SP.quickAdd(${i})">Thêm vào giỏ</button>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    const SP = {
+      show(i){
+        currentIndex = i;
+        const p = filtered[i];
+        modalTitle.textContent = p.name;
+        modalPrice.textContent = VND.format(p.price);
+        modalDesc.textContent  = p.desc || '';
+        qtyInput.value = 1;
+
+        // main + thumbs
+        mainImg.src = p.images?.[0] || p.img;
+        thumbsWrap.innerHTML = '';
+        (p.images?.length ? p.images : [p.img]).forEach((src,idx)=>{
+          const im = document.createElement('img');
+          im.src = src;
+          if(idx===0) im.classList.add('active');
+          im.onclick = ()=>{ 
+            mainImg.src = src; 
+            document.querySelectorAll('.sp-thumbs img').forEach(x=>x.classList.remove('active'));
+            im.classList.add('active');
+          };
+          thumbsWrap.appendChild(im);
+        });
+
+        overlay.style.display = 'flex';
+      },
+      hide(){ overlay.style.display = 'none'; },
+      close(e){ if(e.target === overlay) this.hide(); },
+
+      ensureLogin(){
+        if(localStorage.getItem('isLoggedIn') === 'true') return true;
+        alert('Vui lòng đăng nhập để thêm vào giỏ hàng!');
+        window.location.href = 'lognin.html';
+        return false;
+      },
+
+      quickAdd(i){
+        if(!this.ensureLogin()) return;
+        const p = filtered[i];
+        this._add({ name:p.name, price:p.price, img:p.img, quantity:1 });
+        alert('Đã thêm vào giỏ hàng!');
+      },
+
+      addToCart(){
+        if(currentIndex<0) return;
+        if(!this.ensureLogin()) return;
+        const p = filtered[currentIndex];
+        const q = Math.max(1, parseInt(qtyInput.value||'1',10));
+        const imgSel = mainImg.src || p.img;
+        this._add({ name:p.name, price:p.price, img:imgSel, quantity:q });
+        this.hide();
+        alert('Đã thêm vào giỏ hàng!');
+      },
+
+      _add(item){
+        let cart = JSON.parse(localStorage.getItem('cart')||'[]');
+        const found = cart.find(x=>x.name===item.name && x.img===item.img);
+        if(found) found.quantity += item.quantity;
+        else cart.push(item);
+        localStorage.setItem('cart', JSON.stringify(cart));
+      }
+    };
+    window.SP = SP;
+
+    // Search
+    searchInput.addEventListener('input', ()=>{
+      const kw = searchInput.value.trim().toLowerCase();
+      filtered = PRODUCTS.filter(p=>p.name.toLowerCase().includes(kw));
+      render(filtered);
+    });
+
+    // First render
+    render(filtered);
+  </script>
+</body>
+</html>

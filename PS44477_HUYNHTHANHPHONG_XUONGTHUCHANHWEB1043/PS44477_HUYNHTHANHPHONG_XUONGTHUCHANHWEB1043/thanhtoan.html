@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Thông tin Thanh toán</title>
+
+  <!-- CSS chung của site -->
+  <link rel="stylesheet" href="css/style.css"/>
+
+  <!-- CSS riêng cho trang checkout (đã prefix co- để không xung đột) -->
+  <style>
+    body{font-family:Segoe UI,Arial,sans-serif;background:#f7f7f7;margin:0;padding-top:80px}
+    .co-wrap{max-width:900px;margin:auto;background:#fff;padding:28px;border-radius:14px;box-shadow:0 12px 28px rgba(0,0,0,.08)}
+    .co-title{margin:0 0 20px;text-align:center;color:#333;font-weight:900}
+    .co-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .co-group{margin-bottom:14px}
+    .co-label{display:block;margin-bottom:6px;font-weight:700;color:#444}
+    .co-input{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;outline:none}
+    .co-input:focus{border-color:#ff4b2b;box-shadow:0 0 0 4px rgba(255,75,43,.12)}
+    .co-sec{margin:14px 0 10px;font-weight:900;color:#222}
+
+    /* Cart list */
+    #coCart{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+    .co-item{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;border-bottom:1px dashed #e9e9e9;padding:10px 0}
+    .co-thumb{width:64px;height:64px;object-fit:cover;border-radius:8px;background:#f5f5f5}
+    .co-name{font-weight:700;color:#222;margin:0 0 4px}
+    .co-meta{color:#777;font-size:13px}
+    .co-line{white-space:nowrap;font-weight:800}
+    .co-empty{padding:10px 0;color:#666}
+
+    .co-totals{margin-top:10px}
+    .co-tot{display:flex;justify-content:space-between;margin:6px 0;color:#333}
+    .co-hr{border:0;border-top:2px solid #eee;margin:8px 0}
+    .co-grand{display:flex;justify-content:space-between;font-size:18px;font-weight:900}
+
+    .co-actions{display:flex;gap:12px;margin-top:18px}
+    .co-btn{flex:1;appearance:none;border:0;padding:13px 16px;border-radius:10px;font-weight:800;cursor:pointer}
+    .co-primary{background:#007bff;color:#fff}
+    .co-primary:hover{filter:brightness(.96)}
+    .co-ghost{background:#6c757d;color:#fff}
+    .co-ghost:hover{filter:brightness(.96)}
+    .co-btn:disabled{opacity:.6;cursor:not-allowed}
+
+    @media (max-width:768px){
+      .co-row{grid-template-columns:1fr}
+      .co-item{grid-template-columns:56px 1fr auto}
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV (xài CSS sẵn trong style.css) -->
+  <nav>
+    <div class="nav-container">
+      <div class="nav-left"><a href="index.html"><img src="img/logo.png" alt="Logo" class="logo"></a></div>
+      <div class="nav-right"><input type="search" placeholder="Tìm Kiếm"></div>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang Chủ</a></li>
+        <li><a href="SanPham.html">Sản Phẩm</a></li>
+        <li><a href="#" onclick="window.location.href='index.html#';return false;">Giỏ Hàng</a></li>
+        <li><a href="lognin.html">Đăng Nhập</a></li>
+        <li><a href="dangky.html">Đăng Ký</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="co-wrap">
+    <h2 class="co-title">Thông tin thanh toán</h2>
+
+    <div class="co-group">
+      <label for="coName" class="co-label">Họ và tên</label>
+      <input id="coName" class="co-input" type="text" placeholder="Nguyễn Văn A" required>
+    </div>
+
+    <div class="co-row">
+      <div class="co-group">
+        <label for="coAddr" class="co-label">Địa chỉ</label>
+        <input id="coAddr" class="co-input" type="text" placeholder="123 Đường ABC" required>
+      </div>
+      <div class="co-group">
+        <label for="coPhone" class="co-label">Số điện thoại</label>
+        <input id="coPhone" class="co-input" type="tel" inputmode="numeric" placeholder="0909123456" required>
+      </div>
+    </div>
+
+    <div class="co-sec">Sản phẩm đã chọn</div>
+    <ul id="coCart"></ul>
+
+    <div class="co-totals">
+      <div class="co-tot"><span>Tạm tính</span><strong id="coSubtotal">0₫</strong></div>
+      <div class="co-tot"><span>Phí vận chuyển</span><strong id="coShip">0₫</strong></div>
+      <hr class="co-hr">
+      <div class="co-grand"><span>Tổng cộng</span><strong id="coGrand">0₫</strong></div>
+    </div>
+
+    <div class="co-actions">
+      <button id="coConfirm" class="co-btn co-primary" onclick="coConfirm()">Xác nhận thanh toán</button>
+      <button class="co-btn co-ghost" onclick="window.location.href='index.html'">Quay lại trang chủ</button>
+    </div>
+  </main>
+
+  <script>
+    // ===== Helpers =====
+    const VND = new Intl.NumberFormat('vi-VN', { style:'currency', currency:'VND' });
+    const fmt = n => VND.format(n);
+    const readCart  = () => JSON.parse(localStorage.getItem('cart') || '[]');
+    const readUsers = () => JSON.parse(localStorage.getItem('users') || '[]');
+    const readCur   = () => JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+    // ===== Prefill name/phone nếu đã đăng ký =====
+    function coPrefill() {
+      const cur = readCur();
+      const users = readUsers();
+      if (!cur) return;
+      const u = users.find(x => (x.username || '').toLowerCase() === (cur.username || '').toLowerCase());
+      if (u) {
+        document.getElementById('coName').value  = u.fullname || u.username || '';
+        document.getElementById('coPhone').value = u.phone || '';
+      } else {
+        document.getElementById('coName').value = cur.username || '';
+      }
+    }
+
+    // ===== Render cart =====
+    function coRender() {
+      const listEl = document.getElementById('coCart');
+      const subEl  = document.getElementById('coSubtotal');
+      const shipEl = document.getElementById('coShip');
+      const grandEl= document.getElementById('coGrand');
+      const btn    = document.getElementById('coConfirm');
+
+      const cart = readCart();
+      listEl.innerHTML = '';
+      let subtotal = 0;
+
+      if (!cart.length) {
+        listEl.innerHTML = '<li class="co-empty">Không có sản phẩm nào trong giỏ hàng.</li>';
+        subEl.textContent = fmt(0); shipEl.textContent = fmt(0); grandEl.textContent = fmt(0);
+        btn.disabled = true; return;
+      }
+      btn.disabled = false;
+
+      for (const it of cart) {
+        const qty  = it.quantity || 1;
+        const line = (it.price || 0) * qty;
+        subtotal  += line;
+
+        const li = document.createElement('li');
+        li.className = 'co-item';
+        li.innerHTML = `
+          <img class="co-thumb" src="${it.img}" alt="${it.name}">
+          <div>
+            <div class="co-name">${it.name}</div>
+            <div class="co-meta">x ${qty} • ${fmt(it.price || 0)}</div>
+          </div>
+          <div class="co-line">${fmt(line)}</div>`;
+        listEl.appendChild(li);
+      }
+
+      // Miễn phí ship nếu ≥ 15 triệu, ngược lại 30k
+      const ship = subtotal >= 15_000_000 ? 0 : 30_000;
+      subEl.textContent = fmt(subtotal);
+      shipEl.textContent = fmt(ship);
+      grandEl.textContent = fmt(subtotal + ship);
+    }
+
+    function coValidPhone(p){ return /^0\d{9,10}$/.test(p); }
+
+    // ===== Confirm order =====
+    function coConfirm() {
+      const name = document.getElementById('coName').value.trim();
+      const addr = document.getElementById('coAddr').value.trim();
+      const phone= document.getElementById('coPhone').value.trim();
+      const cart = readCart();
+      if (!cart.length) return alert('Giỏ hàng trống.');
+      if (!name || !addr || !phone) return alert('Vui lòng nhập đầy đủ thông tin.');
+      if (!coValidPhone(phone)) return alert('Số điện thoại không hợp lệ.');
+
+      const subtotal = cart.reduce((s,i)=> s + (i.price||0) * (i.quantity||1), 0);
+      const shipping = subtotal >= 15_000_000 ? 0 : 30_000;
+
+      const order = {
+        id: 'DH' + Date.now(),
+        createdAt: new Date().toISOString(),
+        customer: { name, address: addr, phone },
+        items: cart,
+        subtotal, shipping,
+        total: subtotal + shipping
+      };
+
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      orders.push(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+      localStorage.removeItem('cart');
+
+      alert('Đặt hàng thành công! Mã đơn: ' + order.id);
+      window.location.href = 'index.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => { coPrefill(); coRender(); });
+  </script>
+</body>
+</html>

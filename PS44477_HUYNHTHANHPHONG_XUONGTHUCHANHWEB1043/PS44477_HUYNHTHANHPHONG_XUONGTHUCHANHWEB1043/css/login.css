@@ -1,0 +1,87 @@
+:root{
+  --green: #287025;         /* màu header của site */
+  --green-2: #3aa75a;       /* xanh nhạt hơn */
+  --accent: #ff4b2b;        /* màu nhấn phụ nếu cần */
+  --card-border: rgba(0,0,0,.06);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,.12);
+}
+
+*{box-sizing: border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: "Fira Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  /* nền xanh giống trang chủ */
+  background: radial-gradient(1200px 700px at 20% 10%, #43b56f 0%, transparent 60%),
+              radial-gradient(1100px 600px at 90% 30%, #2e8f54 0%, transparent 65%),
+              linear-gradient(135deg, var(--green), #0f702f);
+  display:grid;
+  place-items:center;
+  padding:24px;
+}
+
+/* khối bọc trung tâm + logo */
+.login-wrap{
+  width:min(420px, 92vw);
+}
+
+.brand{
+  display:flex; align-items:center; gap:10px;
+  justify-content:center; margin-bottom:14px; user-select:none;
+  color:#fff; font-weight:900; letter-spacing:.5px;
+}
+.brand img{ height:26px; width:auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,.2)); }
+
+/* thẻ đăng nhập */
+.login-card{
+  background:#fff;
+  border:1px solid var(--card-border);
+  border-radius:18px;
+  box-shadow: var(--shadow-lg);
+  padding:22px 20px 20px;
+  display:flex; flex-direction:column; gap:14px;
+  animation: slideUp .35s ease;
+}
+@keyframes slideUp{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+
+.login-card h1{
+  margin:0 0 4px; text-align:center; font-size:22px; font-weight:900; color:#1f2937;
+}
+
+/* field */
+.field{ display:flex; flex-direction:column; gap:6px }
+.field span{ font-weight:700; font-size:14px; color:#374151 }
+.field input{
+  width:100%; padding:12px 12px;
+  border:1px solid #e5e7eb; border-radius:12px; outline:0;
+  transition: border-color .15s, box-shadow .15s, transform .05s;
+  font-size:15px;
+}
+.field input:focus{
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(40,112,37,.15);
+}
+
+/* nút */
+.btn-primary{
+  margin-top:6px;
+  width:100%; padding:12px 14px;
+  border:0; border-radius:12px;
+  background: linear-gradient(180deg, var(--green-2), var(--green));
+  color:#fff; font-weight:800; font-size:16px; cursor:pointer;
+  box-shadow: 0 8px 20px rgba(40,112,37,.25);
+  transition: transform .08s ease, filter .12s ease;
+}
+.btn-primary:hover{ filter:brightness(.98) }
+.btn-primary:active{ transform: translateY(1px) }
+
+/* link phụ */
+.muted{ color:#6b7280; text-align:center; margin:6px 0 0 }
+.muted a{ color:var(--green); font-weight:800; text-decoration:none }
+.muted a:hover{ text-decoration:underline }
+
+.back{
+  display:block; text-align:center; margin-top:6px;
+  color:#6b7280; text-decoration:none; font-size:14px;
+}
+.back:hover{ color:#374151 }

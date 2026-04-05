@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhongHuynh Store</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/diachi.css" />
+</head>
+<body>
+  <div class="container">
+    <nav>     <!-- NAV -->
+      <div class="nav-container">
+        <div class="nav-left">
+          <a href="#"><img src="img/logo.png" alt="Logo" class="logo" /></a>
+        </div>
+        <div class="nav-right">
+          <input type="search" placeholder="Tìm Kiếm" />
+        </div>
+        <ul class="nav-menu">
+          <li><a href="#">Trang Chủ</a></li>
+          <li><a href="SanPham.html">Sản Phẩm</a></li>
+          <li><a href="#" onclick="showCart();return false;">Giỏ Hàng</a></li>
+          <li id="login-btn"><a href="lognin.html">Đăng Nhập</a></li>
+          <li id="register-btn"><a href="dangky.html">Đăng Ký</a></li>
+          <li id="logout-btn" style="display:none"><a href="#">Đăng Xuất</a></li>
+        </ul>
+      </div>
+    </nav>
+    <header>    <!-- BANNER -->
+      <div class="img">
+        <img src="img/banner/banner0.jpg" alt="Banner" id="image" />
+        <i onclick="back()" id="left" class="bx bx-left-arrow"></i>
+        <i onclick="next()" id="right" class="bx bx-right-arrow"></i>
+        <div id="count"></div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+      <!-- FLASH SALE -->
+      <section class="flash-wrap" id="flash-sale">
+        <div class="flash-head">
+          <div class="flash-title">⏳ Flash Sale</div>
+          <div>Giảm giá trong: <span id="flashCountdown">00:00:00</span></div>
+        </div>
+        <div class="flash-grid" id="flashGrid"></div>
+      </section>
+
+      <!-- MINI SHOP -->
+      <section id="product-section">
+        <h2>Mini Shop</h2>
+        <div class="product-grid" id="productGrid"></div>
+      </section>
+
+      <!-- MODAL: PRODUCT DETAIL -->
+      <div id="productModal">
+        <div class="modal-content">
+          <span onclick="closeModal()" style="cursor:pointer;float:right;font-size:22px">&times;</span>
+          <div class="gallery">
+            <div class="main-img"><img id="modalMainImg" src="" alt="" /></div>
+            <div class="thumbnails" id="modalThumbnails"></div>
+          </div>
+          <div class="product-detail" id="modalProductDetail"></div>
+        </div>
+      </div>
+
+      <!-- MODAL: CART -->
+      <div id="cartModal">
+        <div class="modal-content cart-modal">
+          <span onclick="closeCart()" style="cursor:pointer;float:right;font-size:22px">&times;</span>
+          <h3>Giỏ hàng của bạn</h3>
+          <div id="cartItems"></div>
+          <br>
+          <div class="cart-actions">
+              <button class="btn-clear-cart" onclick="exportCart()">Xuất Excel</button>
+            <button class="btn-clear-cart" onclick="clearCart()">Xóa giỏ hàng</button>
+            <button class="btn-clear-cart checkout-btn" onclick="checkout()">Thanh toán</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORE LOCATOR -->
+    <section class="store-locator">
+      <div class="sl-card">
+        <div class="sl-head">
+          <h3>📍 Địa chỉ & chi nhánh</h3>
+          <button id="btn-find-nearest" class="sl-btn">Tìm cửa hàng gần nhất</button>
+        </div>
+        <ul id="store-list" class="sl-list"></ul>
+        <div id="nearest-box" class="sl-nearest" hidden>
+          <div class="sl-title">Vị trí & phí ship</div>
+          <p id="nearest-msg" class="sl-msg"></p>
+          <small id="nearest-shop" class="sl-shop"></small>
+          <div class="sl-map">
+            <iframe id="map-embed" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="box_connect">
+        <div class="left_connect">
+          <img src="https://24hstore.vn/images/icon/connect.svg" alt="Kết nối" />
+          <span>phonghuynh.site</span>
+          <a href="#"><img src="https://24hstore.vn/images/icon/fb.svg" alt="Facebook" /></a>
+          <a href="#"><img src="https://24hstore.vn/images/icon/ytb.svg" alt="YouTube" /></a>
+          <a href="#"><img src="https://24hstore.vn/images/icon/zalo.svg" alt="Zalo" /></a>
+          <a href="#"><img src="https://24hstore.vn/images/icon/tiktok.svg" alt="TikTok" /></a>
+          <a href="#"><img src="https://24hstore.vn/images/icon/instagram.svg" alt="Instagram" /></a>
+        </div>
+        <div class="right_connect">
+          <a href="#"><img src="https://24hstore.vn/images/icon/bct.png" alt="BCT" /></a>
+          <a href="#"><img src="https://24hstore.vn/images/icon/ncns.png" alt="NCSC" /></a>
+          <a href="#"><img src="https://24hstore.vn/images/icon/dmca.png" alt="DMCA" /></a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- SCRIPTS -->
+   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/flash.js"></script>
+  <script src="js/diachi.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đăng ký</title>
+  <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+  <div class="reg-wrap">
+    <div class="brand">
+      <img src="img/logo.png" alt="Logo">
+    </div>
+
+    <div class="card">
+      <!-- Trái: info -->
+      <section class="left">
+        <h1 class="title">Đăng ký thành viên</h1>
+        <p class="subtitle">Nhận ưu đãi và tích điểm khi mua sắm.</p>
+
+        <div class="social">
+          <button type="button" onclick="socialSignup('Google')">🔴 Google</button>
+          <button type="button" onclick="socialSignup('Zalo')">💬 Zalo</button>
+        </div>
+
+        <div class="divider"><span></span><b>HOẶC ĐIỀN THÔNG TIN</b><span></span></div>
+        <p class="hint">Điền chính xác số điện thoại để xác minh tài khoản.</p>
+      </section>
+
+      <!-- Phải: form -->
+      <section class="right">
+        <form id="signupForm" onsubmit="return handleRegister(event)">
+          <div class="full">
+            <label for="fullname">Họ và tên</label>
+            <input id="fullname" type="text" placeholder="Nguyễn Văn A" autocomplete="name" required />
+          </div>
+
+          <div>
+            <label for="phone">Số điện thoại</label>
+            <input id="phone" type="tel" inputmode="numeric" placeholder="09xxxxxxxx" autocomplete="tel" required />
+          </div>
+
+          <div>
+            <label for="dob">Ngày sinh</label>
+            <input id="dob" type="date" />
+          </div>
+
+          <div class="full">
+            <label for="username">Tên đăng nhập</label>
+            <input id="username" type="text" placeholder="vd: phonghuynh" autocomplete="username" required />
+          </div>
+
+          <div class="input-wrap">
+            <label for="password">Mật khẩu</label>
+            <input id="password" type="password" minlength="6" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" required />
+            <button type="button" class="toggle-eye" onclick="togglePwd('password', this)">👁️</button>
+          </div>
+
+          <div class="input-wrap">
+            <label for="confirm">Nhập lại mật khẩu</label>
+            <input id="confirm" type="password" minlength="6" placeholder="Nhập lại mật khẩu" required />
+            <button type="button" class="toggle-eye" onclick="togglePwd('confirm', this)">👁️</button>
+          </div>
+
+          <small id="matchMsg" class="field-msg full"></small>
+
+          <label class="agree full">
+            <input id="agree" type="checkbox" />
+            <span>Tôi đồng ý với <a href="#">Điều khoản</a> & <a href="#">Chính sách</a>.</span>
+          </label>
+
+          <div id="formMessage" class="full"></div>
+
+          <div class="actions full">
+            <a class="btn btn-ghost" href="lognin.html">← Quay lại</a>
+            <button id="submitBtn" class="btn btn-primary" type="submit" disabled>Đăng ký</button>
+          </div>
+
+          <div class="foot full">
+            Đã có tài khoản? <a href="lognin.html">Đăng nhập</a>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script src="js/register.js"></script>
+</body>
+</html>
